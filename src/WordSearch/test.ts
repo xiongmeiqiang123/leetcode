@@ -2,7 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import exist from "./index";
 describe("Hello function", () => {
-  it("测试　wordSearch", () => {
+  it("test　wordSearch", () => {
     let board = [["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]];
     let word = "AAAAAAB";
     let result = exist(board, word);
