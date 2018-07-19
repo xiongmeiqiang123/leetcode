@@ -1,5 +1,4 @@
-function exist(board, word){
-
+export default function exist(board, word) {
   type IMap = string[][];
 
   class Board {
@@ -14,18 +13,18 @@ function exist(board, word){
       this.map = map;
       this.maxY = map.length - 1;
       this.maxX = map[0].length - 1;
-  
+
       this.reInit(0, 0);
     }
-  
+
     reInit(x: number, y: number) {
       let col = [];
       this.markedPostions = [];
-  
+
       for (let index = 0; index < this.maxY + 1; index++) {
         this.markedPostions[index] = [];
       }
-  
+
       this.moveToNewPosition(x, y);
     }
     moveToNewPosition(x: number, y: number) {
@@ -42,13 +41,13 @@ function exist(board, word){
       }
       return this.map[y][x];
     }
-  
+
     getPositionsByChart(chart: string): { x: number; y: number }[] {
       for (let y = 0; y <= this.maxY; y++) {
         const element = this.map[y];
         for (let x = 0; x <= this.maxX; x++) {
           const c = element[x];
-          
+
           if (c === chart) {
             this.initPositons.push({ x, y });
           }
@@ -56,7 +55,7 @@ function exist(board, word){
       }
       return this.initPositons;
     }
-  
+
     mark(x: number, y: number) {
       if (y < 0 || y > this.maxY) {
         return undefined;
@@ -65,10 +64,10 @@ function exist(board, word){
         return undefined;
       }
       //   console.log(this);
-  
+
       this.markedPostions[y][x] = true;
     }
-  
+
     isPositionMarked(x: number, y: number): boolean {
       if (y < 0 || y > this.maxY) {
         return false;
@@ -78,7 +77,7 @@ function exist(board, word){
       }
       return this.markedPostions[y][x];
     }
-    
+
     getLeft(): { chart: string | undefined; x: number; y: number } {
       let x = this.x - 1,
         y = this.y;
@@ -89,7 +88,7 @@ function exist(board, word){
         y
       };
     }
-  
+
     getRight(): { chart: string | undefined; x: number; y: number } {
       let x = this.x + 1,
         y = this.y;
@@ -121,60 +120,54 @@ function exist(board, word){
       };
     }
   }
-  
+
   function main(map: string[][], str: string) {
     // const map = [["a", "a", "c"], ["d", "c", "e"], ["s", "d", "p"]];
     let board = new Board(map);
     let start = str[0];
     str = str.substr(1, str.length - 1);
-  
+    // debugger
     let postions = board.getPositionsByChart(start);
-    
+
     function getResult(str: string, board: Board): boolean {
       if (!str.length) {
         return true;
       }
       let c = str[0];
       let _str = str.substr(1, str.length - 1);
-  
-      
+
       let top = board.getTop();
       let right = board.getRight();
       let bottom = board.getBottom();
       let left = board.getLeft();
-  
+
+      let hasMatched = false;
       if (top.chart === c && !board.isPositionMarked(top.x, top.y)) {
         board.moveToNewPosition(top.x, top.y);
-        return getResult(_str, board);
+        hasMatched = getResult(_str, board);
       }
       if (right.chart === c && !board.isPositionMarked(right.x, right.y)) {
         board.moveToNewPosition(right.x, right.y);
-        return getResult(_str, board);
+        hasMatched = getResult(_str, board);
       }
       if (bottom.chart === c && !board.isPositionMarked(bottom.x, bottom.y)) {
         board.moveToNewPosition(bottom.x, bottom.y);
-        return getResult(_str, board);
+        hasMatched = getResult(_str, board);
       }
       if (left.chart === c && !board.isPositionMarked(left.x, left.y)) {
         board.moveToNewPosition(left.x, left.y);
-        return getResult(_str, board);
+        hasMatched = getResult(_str, board);
       }
-      return false;
+      return hasMatched;
     }
+
     let result = postions.map(postion => {
       board.reInit(postion.x, postion.y);
       return getResult(str, board);
     });
-  
-  
-  
+
     return !!result.filter(f => f).length;
   }
-  
-  
+
   return main(board, word);
 }
-
-let a = exist([["C","A","A"],["A","A","A"],["B","C","D"]]
-, "AAB")
-console.log(a, 'a');
